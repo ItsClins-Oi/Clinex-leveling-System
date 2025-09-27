@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Page Not Found</title>
+    <style>
+        /* Solo Leveling Inspired 404 Styles */
+        :root {
+            --primary: #00ffff;
+            --background: #0a0a2a;
+            --foreground: #ffffff;
+            --muted-foreground: #a0a0a0;
+            --card-bg: rgba(26, 26, 58, 0.9);
+            --card-border: #2a2a4a;
+            --destructive: #ff4444;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--background);
+            color: var(--foreground);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+        
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 1rem;
+            width: 100%;
+            max-width: 28rem;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .card-content {
+            padding: 1.5rem;
+        }
+        
+        .pt-6 {
+            padding-top: 1.5rem;
+        }
+        
+        .flex {
+            display: flex;
+        }
+        
+        .items-center {
+            align-items: center;
+        }
+        
+        .justify-center {
+            justify-content: center;
+        }
+        
+        .min-h-screen {
+            min-height: 100vh;
+        }
+        
+        .w-full {
+            width: 100%;
+        }
+        
+        .max-w-md {
+            max-width: 28rem;
+        }
+        
+        .mx-4 {
+            margin-left: 1rem;
+            margin-right: 1rem;
+        }
+        
+        .mb-4 {
+            margin-bottom: 1rem;
+        }
+        
+        .gap-2 {
+            gap: 0.5rem;
+        }
+        
+        .mt-4 {
+            margin-top: 1rem;
+        }
+        
+        .h-8 {
+            height: 2rem;
+        }
+        
+        .w-8 {
+            width: 2rem;
+        }
+        
+        .text-red-500 {
+            color: #ff4444;
+        }
+        
+        .text-2xl {
+            font-size: 1.5rem;
+        }
+        
+        .font-bold {
+            font-weight: bold;
+        }
+        
+        .text-sm {
+            font-size: 0.875rem;
+        }
+        
+        /* Solo Leveling Theme Enhancements */
+        .glow-text {
+            text-shadow: 0 0 10px currentColor;
+        }
+        
+        .quest-terminal {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .quest-terminal::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+            animation: scanline 3s linear infinite;
+        }
+        
+        @keyframes scanline {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        /* Navigation Links */
+        .nav-links {
+            margin-top: 2rem;
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .nav-button {
+            background: rgba(0, 255, 255, 0.1);
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            font-size: 0.875rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .nav-button:hover {
+            background: rgba(0, 255, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 255, 255, 0.3);
+        }
+        
+        /* Error Code Display */
+        .error-code {
+            font-family: 'Courier New', monospace;
+            background: rgba(255, 68, 68, 0.1);
+            border: 1px solid var(--destructive);
+            padding: 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            margin-top: 1rem;
+        }
+        
+        /* Hunter-themed message */
+        .hunter-message {
+            background: rgba(0, 255, 255, 0.05);
+            border-left: 3px solid var(--primary);
+            padding: 1rem;
+            margin-top: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="min-h-screen w-full flex items-center justify-center">
+        <div class="card quest-terminal mx-4">
+            <div class="card-content pt-6">
+                <div class="flex items-center mb-4 gap-2">
+                    <div class="icon-alert h-8 w-8 text-red-500">⚠️</div>
+                    <h1 class="text-2xl font-bold glow-text" style="color: #ff4444;">SYSTEM ERROR 404</h1>
+                </div>
+
+                <p class="mt-4 text-sm">
+                    <strong>Quest Terminal Malfunction:</strong> The requested gateway could not be located in the system archives.
+                </p>
+                
+                <div class="hunter-message">
+                    <p class="text-sm">
+                        <em>"Hunter, this path leads to uncharted territory. Even the System cannot map what does not exist."</em>
+                    </p>
+                </div>
+                
+                <div class="error-code">
+                    ERROR: ROUTE_NOT_FOUND<br>
+                    STATUS: 404<br>
+                    TIMESTAMP: <span id="timestamp"></span>
+                </div>
+
+                <div class="nav-links">
+                    <a href="/" class="nav-button">Return to Base Camp</a>
+                    <a href="/dashboard" class="nav-button">Access Quest Log</a>
+                    <a href="/login" class="nav-button">System Login</a>
+                    <button onclick="history.back()" class="nav-button">Retrace Steps</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Set current timestamp
+        document.getElementById('timestamp').textContent = new Date().toLocaleString();
+        
+        // Add some terminal-like effects
+        const terminal = document.querySelector('.quest-terminal');
+        
+        // Simulate terminal flicker on load
+        setTimeout(() => {
+            terminal.style.opacity = '0.9';
+            setTimeout(() => {
+                terminal.style.opacity = '1';
+                terminal.style.transition = 'opacity 0.3s ease';
+            }, 100);
+        }, 500);
+        
+        // Add interactive elements
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('nav-button')) {
+                // Add click feedback
+                e.target.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    e.target.style.transform = '';
+                }, 150);
+            }
+        });
+        
+        // Console-style typing effect for fun
+        const errorText = document.querySelector('.error-code');
+        const originalText = errorText.innerHTML;
+        errorText.innerHTML = '';
+        
+        let i = 0;
+        function typeWriter() {
+            if (i < originalText.length) {
+                errorText.innerHTML += originalText.charAt(i);
+                i++;
+                setTimeout(typeWriter, 50);
+            }
+        }
+        
+        // Start typing effect after a delay
+        setTimeout(typeWriter, 1000);
+    </script>
+</body>
+</html>
