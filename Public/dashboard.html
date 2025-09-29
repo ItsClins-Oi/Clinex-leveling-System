@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="script.js"></script>
+    <title>Dashboard - Clinex Leveling</title>
+    <style>
+        /* Clinex Leveling Inspired Styles */
+        :root {
+            --primary: #00ffff;
+            --primary-foreground: #000000;
+            --background: #0a0a2a;
+            --foreground: #ffffff;
+            --muted-foreground: #a0a0a0;
+            --card: rgba(26, 26, 58, 0.8);
+            --border: #2a2a4a;
+            --destructive: #ff4444;
+            --blue-400: #60a5fa;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--background);
+            color: var(--foreground);
+            min-height: 100vh;
+        }
+        
+        .font-orbitron {
+            font-family: 'Orbitron', monospace;
+            font-weight: 700;
+        }
+        
+        /* Navigation Header */
+        nav {
+            border-bottom: 1px solid var(--border);
+            background: rgba(26, 26, 58, 0.5);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .max-w-7xl {
+            max-width: 80rem;
+        }
+        
+        .mx-auto {
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .px-4 {
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+        
+        .sm\:px-6 {
+            padding-left: 1.5rem;
+            padding-right: 1.5rem;
+        }
+        
+        .lg\:px-8 {
+            padding-left: 2rem;
+            padding-right: 2rem;
+        }
+        
+        .py-8 {
+            padding-top: 2rem;
+            padding-bottom: 2rem;
+        }
+        
+        .flex {
+            display: flex;
+        }
+        
+        .items-center {
+            align-items: center;
+        }
+        
+        .justify-between {
+            justify-content: space-between;
+        }
+        
+        .h-16 {
+            height: 4rem;
+        }
+        
+        .space-x-4 > * + * {
+            margin-left: 1rem;
+        }
+        
+        .text-2xl {
+            font-size: 1.5rem;
+        }
+        
+        .text-xl {
+            font-size: 1.25rem;
+        }
+        
+        .text-lg {
+            font-size: 1.125rem;
+        }
+        
+        .text-sm {
+            font-size: 0.875rem;
+        }
+        
+        .text-xs {
+            font-size: 0.75rem;
+        }
+        
+        .font-bold {
+            font-weight: bold;
+        }
+        
+        .font-medium {
+            font-weight: 500;
+        }
+        
+        .font-semibold {
+            font-weight: 600;
+        }
+        
+        /* Main Layout */
+        .min-h-screen {
+            min-height: 100vh;
+        }
+        
+        .bg-background {
+            background-color: var(--background);
+        }
+        
+        .pt-16 {
+            padding-top: 4rem;
+        }
+        
+        .mb-8 {
+            margin-bottom: 2rem;
+        }
+        
+        .mb-6 {
+            margin-bottom: 1.5rem;
+        }
+        
+        .mb-4 {
+            margin-bottom: 1rem;
+        }
+        
+        .mt-2 {
+            margin-top: 0.5rem;
+        }
+        
+        .mr-3 {
+            margin-right: 0.75rem;
+        }
+        
+        .mr-2 {
+            margin-right: 0.5rem;
+        }
+        
+        .mr-1 {
+            margin-right: 0.25rem;
+        }
+        
+        .ml-2 {
+            margin-left: 0.5rem;
+        }
+        
+        .gap-6 {
+            gap: 1.5rem;
+        }
+        
+        .gap-4 {
+            gap: 1rem;
+        }
+        
+        .gap-3 {
+            gap: 0.75rem;
+        }
+        
+        .space-y-4 > * + * {
+            margin-top: 1rem;
+        }
+        
+        .space-y-3 > * + * {
+            margin-top: 0.75rem;
+        }
+        
+        /* Game UI Panels */
+        .game-ui-panel {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 1rem;
+            backdrop-filter: blur(10px);
+        }
+        
+        .p-6 {
+            padding: 1.5rem;
+        }
+        
+        .p-4 {
+            padding: 1rem;
+        }
+        
+        .p-3 {
+            padding: 0.75rem;
+        }
+        
+        .rounded-xl {
+            border-radius: 1rem;
+        }
+        
+        .rounded-lg {
+            border-radius: 0.5rem;
+        }
+        
+        .rounded {
+            border-radius: 0.375rem;
+        }
+        
+        .rounded-full {
+            border-radius: 9999px;
+        }
+        
+        /* User Status Header */
+        .w-16 {
+            width: 4rem;
+        }
+        
+        .h-16 {
+            height: 4rem;
+        }
+        
+        .bg-gradient-to-r {
+            background-image: linear-gradient(to right, var(--primary), var(--blue-400));
+        }
+        
+        .flex-col {
+            flex-direction: column;
+        }
+        
+        .lg\:flex-row {
+            flex-direction: row;
+        }
+        
+        .lg\:items-center {
+            align-items: center;
+        }
+        
+        .lg\:justify-between {
+            justify-content: space-between;
+        }
+        
+        /* Progress Bar */
+        .level-progress {
+            background: linear-gradient(90deg, var(--primary), var(--blue-400));
+            transition: width 0.3s ease;
+        }
+        
+        .bg-muted {
+            background-color: var(--border);
+        }
+        
+        .h-2 {
+            height: 0.5rem;
+        }
+        
+        .w-32 {
+            width: 8rem;
+        }
+        
+        /* Stats Grid */
+        .grid {
+            display: grid;
+        }
+        
+        .grid-cols-3 {
+            grid-template-columns: repeat(3, 1fr);
+        }
+        
+        .lg\:grid-cols-3 {
+            grid-template-columns: repeat(3, 1fr);
+        }
+        
+        .lg\:col-span-2 {
+            grid-column: span 2 / span 2;
+        }
+        
+        .text-center {
+            text-align: center;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+        }
+        
+        /* Form Elements */
+        input, textarea {
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            background-color: var(--background);
+            border: 1px solid var(--border);
+            border-radius: 0.375rem;
+            color: var(--foreground);
+            font-size: 0.875rem;
+            transition: all 0.2s;
+        }
+        
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 1px var(--primary);
+        }
+        
+        input::placeholder, textarea::placeholder {
+            color: var(--muted-foreground);
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+            font-family: inherit;
+        }
+        
+        /* Checkbox */
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .checkbox {
+            width: 1rem;
+            height: 1rem;
+            border: 1px solid var(--border);
+            border-radius: 0.25rem;
+            background: var(--background);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .checkbox.checked {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+        
+        .checkbox.checked::after {
+            content: "✓";
+            color: var(--primary-foreground);
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+        
+        /* Buttons */
+        .quest-complete-btn {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--blue-400) 100%);
+            border: none;
+            color: var(--primary-foreground);
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .quest-complete-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 255, 255, 0.3);
+        }
+        
+        .quest-complete-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .ghost-button {
+            background: var(--card);
+            border: 1px solid var(--border);
+            color: var(--foreground);
+            padding: 0.75rem;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            width: 100%;
+            text-align: left;
+        }
+        
+        .ghost-button:hover {
+            border-color: var(--primary);
+        }
+        
+        .destructive-button {
+            background: rgba(255, 68, 68, 0.1);
+            border: 1px solid rgba(255, 68, 68, 0.3);
+            color: var(--destructive);
+            padding: 0.75rem;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            width: 100%;
+            text-align: left;
+        }
+        
+        .destructive-button:hover {
+            border-color: var(--destructive);
+        }
+        
+        .text-button {
+            background: none;
+            border: none;
+            color: var(--primary);
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        
+        .text-button:hover {
+            color: rgba(0, 255, 255, 0.8);
+        }
+        
+        /* Icons */
+        .inline {
+            display: inline;
+        }
+        
+        .w-4 {
+            width: 1rem;
+        }
+        
+        .h-4 {
+            height: 1rem;
+        }
+        
+        .w-8 {
+            width: 2rem;
+        }
+        
+        .h-8 {
+            height: 2rem;
+        }
+        
+        .w-12 {
+            width: 3rem;
+        }
+        
+        .h-12 {
+            height: 3rem;
+        }
+        
+        .opacity-50 {
+            opacity: 0.5;
+        }
+        
+        /* Loading Animation */
+        .animate-spin {
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .border-b-2 {
+            border-bottom-width: 2px;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .lg\:grid-cols-3 {
+                grid-template-columns: 1fr;
+            }
+            
+            .lg\:col-span-2 {
+                grid-column: 1;
+            }
+            
+            .lg\:flex-row {
+                flex-direction: column;
+            }
+        }
+        
+        /* Clinex Branding */
+        .clinex-glow {
+            text-shadow: 0 0 10px var(--primary);
+        }
+        
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            max-width: 20rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            display: none;
+        }
+        
+        .toast.show {
+            display: block;
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        .toast.destructive {
+            border-color: var(--destructive);
+        }
+        
+        .toast-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Header -->
+    <nav>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center space-x-4">
+                    <div class="icon-crown text-primary text-2xl">⚡</div>
+                    <h1 class="text-xl font-bold font-orbitron clinex-glow">CLINEX LEVELING</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-sm text-muted-foreground" id="navWelcome">Welcome back, Hunter</span>
+                    <button class="text-button" id="logoutBtn">
+                        <span class="icon-exit mr-1">🚪</span>
+                        Exit
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="min-h-screen bg-background pt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <!-- User Status Header -->
+            <div class="game-ui-panel rounded-xl p-6 mb-8">
+                <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+                    <div class="flex items-center space-x-6">
+                        <div class="w-16 h-16 rounded-full bg-gradient-to-r from-primary to-blue-400 flex items-center justify-center">
+                            <div class="icon-user text-2xl">👤</div>
+                        </div>
+                        <div>
+                            <h2 class="text-2xl font-bold font-orbitron" id="userName">Hunter</h2>
+                            <p class="text-muted-foreground" id="userStats">
+                                Level 1 • Daily Streak: 0 days
+                            </p>
+                            <div class="flex items-center mt-2">
+                                <span class="text-sm text-muted-foreground mr-2">EXP:</span>
+                                <div class="w-32 bg-muted rounded-full h-2">
+                                    <div class="level-progress h-full rounded-full" id="expProgress" style="width: 0%"></div>
+                                </div>
+                                <span class="text-sm text-muted-foreground ml-2" id="expText">0/1000</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-3 gap-4">
+                        <div class="stat-card p-4 rounded-lg text-center">
+                            <div class="text-2xl font-bold text-primary" id="statCompletedToday">0</div>
+                            <div class="text-xs text-muted-foreground">Completed Today</div>
+                        </div>
+                        <div class="stat-card p-4 rounded-lg text-center">
+                            <div class="text-2xl font-bold text-primary" id="statTotalQuests">0</div>
+                            <div class="text-xs text-muted-foreground">Total Quests</div>
+                        </div>
+                        <div class="stat-card p-4 rounded-lg text-center">
+                            <div class="text-2xl font-bold text-primary" id="statStreak">0</div>
+                            <div class="text-xs text-muted-foreground">Day Streak</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid lg:grid-cols-3 gap-8">
+                <!-- Today's Quests -->
+                <div class="lg:col-span-2">
+                    <div class="game-ui-panel rounded-xl p-6">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-xl font-bold flex items-center font-orbitron">
+                                <span class="icon-scroll mr-3">📜</span>
+                                TODAY'S QUESTS
+                            </h3>
+                            <span class="text-sm text-muted-foreground" id="dailyQuestCount">
+                                0 of 0 completed
+                            </span>
+                        </div>
+                        
+                        <div class="space-y-4" id="dailyQuestsContainer">
+                            <div class="text-center py-8 text-muted-foreground">
+                                <span class="icon-scroll w-12 h-12 mx-auto mb-4 opacity-50">📜</span>
+                                <p>No daily quests available. Create some quests and mark them as daily!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quest Management Sidebar -->
+                <div class="space-y-6">
+                    <!-- Add New Quest -->
+                    <div class="game-ui-panel rounded-xl p-6">
+                        <h3 class="text-lg font-bold mb-4 flex items-center font-orbitron">
+                            <span class="icon-plus mr-3">➕</span>
+                            NEW QUEST
+                        </h3>
+                        
+                        <form id="createQuestForm" class="space-y-4">
+                            <div>
+                                <label for="quest-name" class="block text-sm font-medium mb-2">Quest Name</label>
+                                <input
+                                    id="quest-name"
+                                    name="name"
+                                    placeholder="Enter quest name"
+                                    class="w-full px-3 py-2 bg-input border border-border rounded focus:border-primary focus:ring-1 focus:ring-primary"
+                                    required
+                                />
+                            </div>
+                            <div>
+                                <label for="quest-description" class="block text-sm font-medium mb-2">Description</label>
+                                <textarea
+                                    id="quest-description"
+                                    name="description"
+                                    rows="3"
+                                    placeholder="Quest description"
+                                    class="w-full px-3 py-2 bg-input border border-border rounded focus:border-primary focus:ring-1 focus:ring-primary"
+                                ></textarea>
+                            </div>
+                            <div class="checkbox-container">
+                                <div class="checkbox" id="dailyCheckbox"></div>
+                                <label for="dailyCheckbox" class="text-sm">Daily Quest</label>
+                            </div>
+                            <button
+                                type="submit"
+                                class="quest-complete-btn w-full text-primary-foreground py-2 rounded font-semibold"
+                                id="createQuestBtn"
+                            >
+                                <span class="icon-plus mr-2">➕</span>
+                                <span id="createQuestText">Create Quest</span>
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Quest Log -->
+                    <div class="game-ui-panel rounded-xl p-6">
+                        <h3 class="text-lg font-bold mb-4 flex items-center font-orbitron">
+                            <span class="icon-book mr-3">📚</span>
+                            QUEST LOG
+                        </h3>
+                        
+                        <div class="space-y-3" id="questLogContainer">
+                            <div class="text-center py-4 text-muted-foreground">
+                                <span class="icon-book w-8 h-8 mx-auto mb-2 opacity-50">📚</span>
+                                <p class="text-sm">No quests created yet</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- System Actions -->
+                    <div class="game-ui-panel rounded-xl p-6">
+                        <h3 class="text-lg font-bold mb-4 flex items-center font-orbitron">
+                            <span class="icon-zap mr-3">⚡</span>
+                            SYSTEM
+                        </h3>
+                        
+                        <div class="space-y-3">
+                            <button class="ghost-button" id="resetDailyBtn">
+                                <span class="icon-refresh text-primary mr-3">🔄</span>
+                                Reset Daily Quests
+                            </button>
+                            <button class="ghost-button" id="exportDataBtn">
+                                <span class="icon-download text-primary mr-3">💾</span>
+                                Export Progress
+                            </button>
+                            <button class="destructive-button" id="exitSystemBtn">
+                                <span class="icon-exit text-destructive mr-3">🚪</span>
+                                Exit System
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        <div class="toast-title" id="toastTitle"></div>
+        <div id="toastDescription"></div>
+    </div>
+
+    <script>
+        // Sample user data (would come from your backend)
+        const userData = {
+            username: "Hunter",
+            level: 1,
+            experience: 0,
+            streakDays: 0
+        };
+
+        // Sample quests data
+        let quests = [];
+        let dailyQuests = [];
+
+        // DOM Elements
+        const userNameEl = document.getElementById('userName');
+        const userStatsEl = document.getElementById('userStats');
+        const expProgressEl = document.getElementById('expProgress');
+        const expTextEl = document.getElementById('expText');
+        const navWelcomeEl = document.getElementById('navWelcome');
+        const statCompletedTodayEl = document.getElementById('statCompletedToday');
+        const statTotalQuestsEl = document.getElementById('statTotalQuests');
+        const statStreakEl = document.getElementById('statStreak');
+        const dailyQuestCountEl = document.getElementById('dailyQuestCount');
+        const dailyQuestsContainerEl = document.getElementById('dailyQuestsContainer');
+        const questLogContainerEl = document.getElementById('questLogContainer');
+        const createQuestFormEl = document.getElementById('createQuestForm');
+        const createQuestBtnEl = document.getElementById('createQuestBtn');
+        const createQuestTextEl = document.getElementById('createQuestText');
+        const dailyCheckboxEl = document.getElementById('dailyCheckbox');
+        const resetDailyBtnEl = document.getElementById('resetDailyBtn');
+        const exportDataBtnEl = document.getElementById('exportDataBtn');
+        const exitSystemBtnEl = document.getElementById('exitSystemBtn');
+        const logoutBtnEl = document.getElementById('logoutBtn');
+
+        // Initialize dashboard
+        function initDashboard() {
+            updateUserInfo();
+            updateQuests();
+            setupEventListeners();
+            requestNotificationPermission();
+        }
+
+        // Update user information
+        function updateUserInfo() {
+            userNameEl.textContent = userData.username;
+            userStatsEl.textContent = `Level ${userData.level} • Daily Streak: ${userData.streakDays} days`;
+            navWelcomeEl.textContent = `Welcome back, ${userData.username}`;
+            
+            const expPercent = ((userData.experience % 1000) / 1000) * 100;
+            expProgressEl.style.width = `${expPercent}%`;
+            expTextEl.textContent = `${userData.experience % 1000}/1000`;
+            
+            statStreakEl.textContent = userData.streakDays;
+        }
+
+        // Update quests display
+        function updateQuests() {
+            const completedToday = dailyQuests.filter(q => q.completed).length;
+            statCompletedTodayEl.textContent = completedToday;
+            statTotalQuestsEl.textContent = quests.length;
+            dailyQuestCountEl.textContent = `${completedToday} of ${dailyQuests.length} completed`;
+
+            // Update daily quests
+            dailyQuestsContainerEl.innerHTML = '';
+            if (dailyQuests.length === 0) {
+                dailyQuestsContainerEl.innerHTML = `
+                    <div class="text-center py-8 text-muted-foreground">
+                        <span class="icon-scroll w-12 h-12 mx-auto mb-4 opacity-50">📜</span>
+                        <p>No daily quests available. Create some quests and mark them as daily!</p>
+                    </div>
+                `;
+            } else {
+                dailyQuests.forEach(quest => {
+                    const questElement = document.createElement('div');
+                    questElement.className = 'quest-item p-4 bg-card rounded border border-border';
+                    questElement.innerHTML = `
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <div class="font-medium">${quest.name}</div>
+                                <div class="text-sm text-muted-foreground">${quest.description}</div>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <div class="checkbox ${quest.completed ? 'checked' : ''}" data-quest-id="${quest.id}"></div>
+                                <span class="text-xs text-muted-foreground">${quest.completed ? 'Completed' : 'Pending'}</span>
+                            </div>
+                        </div>
+                    `;
+                    dailyQuestsContainerEl.appendChild(questElement);
+                });
+            }
+
+            // Update quest log
+            questLogContainerEl.innerHTML = '';
+            if (quests.length === 0) {
+                questLogContainerEl.innerHTML = `
+                    <div class="text-center py-4 text-muted-foreground">
+                        <span class="icon-book w-8 h-8 mx-auto mb-2 opacity-50">📚</span>
+                        <p class="text-sm">No quests created yet</p>
+                    </div>
+                `;
+            } else {
+                quests.forEach(quest => {
+                    const questLogElement = document.createElement('div');
+                    questLogElement.className = 'flex items-center justify-between p-3 bg-card rounded border border-border';
+                    questLogElement.innerHTML = `
+                        <div>
+                            <div class="font-medium text-sm">${quest.name}</div>
+                            <div class="text-xs text-muted-foreground">
+                                ${quest.isDaily ? 'Daily' : 'Non-daily'} • ${quest.completed ? 'Completed' : 'Pending'}
+                            </div>
+                        </div>
+                    `;
+                    questLogContainerEl.appendChild(questLogElement);
+                });
+            }
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Create quest form
+            createQuestFormEl.addEventListener('submit', function(e) {
+                e.preventDefault();
+                createQuest();
+            });
+
+            // Daily checkbox
+            let isDailyChecked = false;
+            dailyCheckboxEl.addEventListener('click', function() {
+                isDailyChecked = !isDailyChecked;
+                dailyCheckboxEl.classList.toggle('checked', isDailyChecked);
+            });
+
+            // System buttons
+            resetDailyBtnEl.addEventListener('click', resetDailyQuests);
+            exportDataBtnEl.addEventListener('click', exportData);
+            exitSystemBtnEl.addEventListener('click', exitSystem);
+            logoutBtnEl.addEventListener('click', exitSystem);
+
+            // Quest completion (delegated event listener)
+            dailyQuestsContainerEl.addEventListener('click', function(e) {
+                if (e.target.classList.contains('checkbox')) {
+                    const questId = e.target.getAttribute('data-quest-id');
+                    toggleQuestCompletion(questId);
+                }
+            });
+        }
+
+        // Create new quest
+        function createQuest() {
+            const formData = new FormData(createQuestFormEl);
+            const name = formData.get('name');
+            const description = formData.get('description');
+
+            if (!name.trim()) return;
+
+            createQuestBtnEl.disabled = true;
+            createQuestTextEl.textContent = 'Creating...';
+
+            const newQuest = {
+                id: Date.now().toString(),
+                name: name.trim(),
+                description: description.trim(),
+                isDaily: isDailyChecked,
+                completed: false,
+                createdAt: new Date().toISOString()
+            };
+
+            // Simulate API call delay
+            setTimeout(() => {
+                quests.push(newQuest);
+                if (newQuest.isDaily) {
+                    dailyQuests.push(newQuest);
+                }
+
+                createQuestFormEl.reset();
+                dailyCheckboxEl.classList.remove('checked');
+                isDailyChecked = false;
+
+                createQuestBtnEl.disabled = false;
+                createQuestTextEl.textContent = 'Create Quest';
+
+                updateQuests();
+                showToast('Quest Created!', 'Your new quest has been added to the system.');
+
+                // Show notification if permission granted
+                if (Notification.permission === 'granted') {
+                    new Notification('New Quest Added!', {
+                        body: `"${newQuest.name}" has been added to your quest log.`,
+                        icon: '/favicon.ico'
+                    });
+                }
+            }, 500);
+        }
+
+        // Toggle quest completion
+        function toggleQuestCompletion(questId) {
+            const quest = quests.find(q => q.id === questId);
+            if (quest) {
+                quest.completed = !quest.completed;
+                
+                // Update experience
+                if (quest.completed) {
+                    userData.experience += 100;
+                    if (userData.experience >= 1000) {
+                        userData.level += 1;
+                        userData.experience = 0;
+                        showToast('Level Up!', `Congratulations! You reached level ${userData.level}.`);
+                    }
+                } else {
+                    userData.experience = Math.max(0, userData.experience - 100);
+                }
+
+                updateUserInfo();
+                updateQuests();
+                showToast('Quest Updated!', `Quest "${quest.name}" marked as ${quest.completed ? 'completed' : 'pending'}.`);
+            }
+        }
+
+        // Reset daily quests
+        function resetDailyQuests() {
+            dailyQuests.forEach(quest => {
+                quest.completed = false;
+            });
+            updateQuests();
+            showToast('Daily Reset Complete', 'All daily quests have been reset.');
+        }
+
+        // Export data
+        function exportData() {
+            const data = {
+                user: userData,
+                quests: quests,
+                exportedAt: new Date().toISOString()
+            };
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `clinex-leveling-data-${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            showToast('Data Exported', 'Your progress data has been downloaded.');
+        }
+
+        // Exit system
+        function exitSystem() {
+            if (confirm('Are you sure you want to exit the Clinex Leveling system?')) {
+                showToast('System Exit', 'Returning to base camp...');
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 1000);
+            }
+        }
+
+        // Request notification permission
+        function requestNotificationPermission() {
+            if ('Notification' in window && Notification.permission === 'default') {
+                Notification.requestPermission();
+            }
+        }
+
+        // Toast notification system
+        function showToast(title, description, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastTitle = document.getElementById('toastTitle');
+            const toastDescription = document.getElementById('toastDescription');
+            
+            toastTitle.textContent = title;
+            toastDescription.textContent = description;
+            
+            toast.className = 'toast';
+            if (type === 'error') {
+                toast.classList.add('destructive');
+            }
+            
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Initialize the dashboard when page loads
+        document.addEventListener('DOMContentLoaded', initDashboard);
+    </script>
+</body>
+</html>

@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="script.js"></script>
+    <title>System Access - Daily Quest System</title>
+    <style>
+        /* Clinex Leveling Inspired Styles */
+        :root {
+            --primary: #00ffff;
+            --primary-foreground: #000000;
+            --background: #0a0a2a;
+            --foreground: #ffffff;
+            --muted-foreground: #a0a0a0;
+            --input: #1a1a3a;
+            --border: #2a2a4a;
+            --destructive: #ff4444;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--background);
+            color: var(--foreground);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+        
+        .auth-form {
+            background: rgba(26, 26, 58, 0.8);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: 1rem;
+            width: 100%;
+            max-width: 28rem;
+            box-shadow: 0 0 50px rgba(0, 255, 255, 0.1);
+        }
+        
+        .text-center {
+            text-align: center;
+        }
+        
+        .mb-8 {
+            margin-bottom: 2rem;
+        }
+        
+        .mx-auto {
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .font-orbitron {
+            font-family: 'Orbitron', monospace;
+            font-weight: 700;
+        }
+        
+        .space-y-6 > * + * {
+            margin-top: 1.5rem;
+        }
+        
+        .mt-2 {
+            margin-top: 0.5rem;
+        }
+        
+        .mt-6 {
+            margin-top: 1.5rem;
+        }
+        
+        .mr-2 {
+            margin-right: 0.5rem;
+        }
+        
+        .mr-1 {
+            margin-right: 0.25rem;
+        }
+        
+        .inline {
+            display: inline;
+        }
+        
+        .w-4 {
+            width: 1rem;
+        }
+        
+        .h-4 {
+            height: 1rem;
+        }
+        
+        .text-4xl {
+            font-size: 2.25rem;
+        }
+        
+        .text-3xl {
+            font-size: 1.875rem;
+        }
+        
+        .text-sm {
+            font-size: 0.875rem;
+        }
+        
+        .font-bold {
+            font-weight: bold;
+        }
+        
+        .font-semibold {
+            font-weight: 600;
+        }
+        
+        .font-medium {
+            font-weight: 500;
+        }
+        
+        .text-primary {
+            color: var(--primary);
+        }
+        
+        .text-muted-foreground {
+            color: var(--muted-foreground);
+        }
+        
+        .bg-input {
+            background-color: var(--input);
+        }
+        
+        .border-border {
+            border-color: var(--border);
+        }
+        
+        .focus\:border-primary:focus {
+            border-color: var(--primary);
+        }
+        
+        .focus\:ring-1:focus {
+            box-shadow: 0 0 0 1px var(--primary);
+        }
+        
+        .focus\:ring-primary:focus {
+            box-shadow: 0 0 0 1px var(--primary);
+        }
+        
+        .w-full {
+            width: 100%;
+        }
+        
+        .px-4 {
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+        
+        .py-3 {
+            padding-top: 0.75rem;
+            padding-bottom: 0.75rem;
+        }
+        
+        .p-8 {
+            padding: 2rem;
+        }
+        
+        .p-4 {
+            padding: 1rem;
+        }
+        
+        .rounded-lg {
+            border-radius: 0.5rem;
+        }
+        
+        .rounded-xl {
+            border-radius: 0.75rem;
+        }
+        
+        .block {
+            display: block;
+        }
+        
+        .flex {
+            display: flex;
+        }
+        
+        .items-center {
+            align-items: center;
+        }
+        
+        .justify-center {
+            justify-content: center;
+        }
+        
+        .min-h-screen {
+            min-height: 100vh;
+        }
+        
+        /* Form Elements */
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        
+        input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background-color: var(--input);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            color: var(--foreground);
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 1px var(--primary);
+        }
+        
+        input::placeholder {
+            color: var(--muted-foreground);
+        }
+        
+        /* Buttons */
+        .quest-complete-btn {
+            background: linear-gradient(135deg, var(--primary) 0%, #0088cc 100%);
+            border: none;
+            color: var(--primary-foreground);
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .quest-complete-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 255, 255, 0.3);
+        }
+        
+        .quest-complete-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .text-button {
+            background: none;
+            border: none;
+            color: var(--primary);
+            cursor: pointer;
+            transition: color 0.2s;
+            font-size: 0.875rem;
+        }
+        
+        .text-button:hover {
+            color: rgba(0, 255, 255, 0.8);
+        }
+        
+        .text-muted-button {
+            background: none;
+            border: none;
+            color: var(--muted-foreground);
+            cursor: pointer;
+            transition: color 0.2s;
+            font-size: 0.875rem;
+        }
+        
+        .text-muted-button:hover {
+            color: var(--foreground);
+        }
+        
+        /* Icons (using UTF-8 symbols as placeholders) */
+        .icon-shield::before {
+            content: "🛡️";
+            font-size: 2.25rem;
+        }
+        
+        .icon-unlock::before {
+            content: "🔓";
+        }
+        
+        .icon-arrow-left::before {
+            content: "←";
+        }
+        
+        /* System Access Animation */
+        @keyframes systemBoot {
+            0% { opacity: 0; transform: translateY(-20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        
+        .auth-form {
+            animation: systemBoot 0.6s ease-out;
+        }
+        
+        /* Terminal Scan Effect */
+        .scan-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+            animation: scan 3s linear infinite;
+        }
+        
+        @keyframes scan {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100vh); }
+        }
+        
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            background: var(--input);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            max-width: 20rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            display: none;
+        }
+        
+        .toast.show {
+            display: block;
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        .toast.destructive {
+            border-color: var(--destructive);
+        }
+        
+        .toast-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        /* Security Level Indicator */
+        .security-level {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+        
+        .security-bar {
+            height: 4px;
+            background: var(--border);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+        
+        .security-progress {
+            height: 100%;
+            background: linear-gradient(90deg, #ff4444, #ffaa00, #00ff00);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="scan-line"></div>
+    
+    <div class="min-h-screen flex items-center justify-center p-4">
+        <div class="auth-form p-8 rounded-xl w-full max-w-md">
+            <div class="text-center mb-8">
+                <div class="icon-shield text-primary mb-4 mx-auto"></div>
+                <h2 class="text-3xl font-bold font-orbitron">SYSTEM ACCESS</h2>
+                <p class="text-muted-foreground mt-2">Enter your credentials to access the quest system</p>
+                
+                <div class="security-level">
+                    <div class="text-xs text-muted-foreground">SECURITY LEVEL: HUNTER</div>
+                    <div class="security-bar">
+                        <div class="security-progress" id="securityProgress"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <form id="loginForm" class="space-y-6" action="/api/login" method="POST">
+                <div>
+                    <label for="username" class="block text-sm font-medium mb-2">Username</label>
+                    <input
+                        id="username"
+                        name="username"
+                        type="text"
+                        placeholder="Enter your username"
+                        class="w-full px-4 py-3 bg-input border border-border rounded-lg focus:border-primary focus:ring-1 focus:ring-primary"
+                        required
+                        oninput="updateSecurityLevel()"
+                    />
+                </div>
+                <div>
+                    <label for="password" class="block text-sm font-medium mb-2">Password</label>
+                    <input
+                        id="password"
+                        name="password"
+                        type="password"
+                        placeholder="Enter your password"
+                        class="w-full px-4 py-3 bg-input border border-border rounded-lg focus:border-primary focus:ring-1 focus:ring-primary"
+                        required
+                        oninput="updateSecurityLevel()"
+                    />
+                </div>
+                <button
+                    type="submit"
+                    class="quest-complete-btn w-full text-primary-foreground py-3 rounded-lg font-semibold"
+                    id="submitBtn"
+                >
+                    <span class="icon-unlock mr-2"></span>
+                    <span id="submitText">Access System</span>
+                </button>
+            </form>
+            
+            <div class="text-center mt-6">
+                <a href="/signup">
+                    <button type="button" class="text-button">
+                        Don't have an account? Join the Hunt
+                    </button>
+                </a>
+                <br />
+                <a href="/">
+                    <button type="button" class="text-muted-button mt-2">
+                        <span class="icon-arrow-left inline mr-1"></span>
+                        Back to Home
+                    </button>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        <div class="toast-title" id="toastTitle"></div>
+        <div id="toastDescription"></div>
+    </div>
+
+    <script>
+        // Security level indicator
+        function updateSecurityLevel() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const progress = document.getElementById('securityProgress');
+            
+            let securityLevel = 0;
+            if (username.length > 0) securityLevel += 30;
+            if (password.length > 0) securityLevel += 30;
+            if (username.length > 3) securityLevel += 20;
+            if (password.length > 5) securityLevel += 20;
+            
+            progress.style.width = Math.min(securityLevel, 100) + '%';
+        }
+        
+        // Form handling
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const submitText = document.getElementById('submitText');
+            const originalText = submitText.textContent;
+            
+            // Show loading state
+            submitBtn.disabled = true;
+            submitText.textContent = 'Accessing...';
+            
+            try {
+                const formData = new FormData(this);
+                const data = {
+                    username: formData.get('username'),
+                    password: formData.get('password')
+                };
+                
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                if (response.ok) {
+                    showToast('System Access Granted', 'Welcome back, Hunter!', 'success');
+                    setTimeout(() => {
+                        window.location.href = '/dashboard';
+                    }, 1500);
+                } else {
+                    const error = await response.json();
+                    showToast('Access Denied', error.message || 'Invalid credentials', 'error');
+                }
+            } catch (error) {
+                showToast('Access Denied', 'Network error. Please try again.', 'error');
+            } finally {
+                // Reset button state
+                submitBtn.disabled = false;
+                submitText.textContent = originalText;
+            }
+        });
+        
+        function showToast(title, description, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastTitle = document.getElementById('toastTitle');
+            const toastDescription = document.getElementById('toastDescription');
+            
+            toastTitle.textContent = title;
+            toastDescription.textContent = description;
+            
+            // Set toast style based on type
+            toast.className = 'toast';
+            if (type === 'error') {
+                toast.classList.add('destructive');
+            }
+            
+            // Show toast
+            toast.classList.add('show');
+            
+            // Hide after 5 seconds
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 5000);
+        }
+        
+        // Initialize security level
+        updateSecurityLevel();
+    </script>
+</body>
+</html>

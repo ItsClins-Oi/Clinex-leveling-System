@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="script.js"></script>
+    <title>Clinex Leveling - Daily Quest System</title>
+    <style>
+        /* Clinex Leveling Inspired Styles */
+        :root {
+            --primary: #00ffff;
+            --primary-foreground: #000000;
+            --background: #0a0a2a;
+            --foreground: #ffffff;
+            --muted-foreground: #a0a0a0;
+            --card: rgba(26, 26, 58, 0.8);
+            --border: #2a2a4a;
+            --blue-400: #60a5fa;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--background);
+            color: var(--foreground);
+            min-height: 100vh;
+        }
+        
+        .font-orbitron {
+            font-family: 'Orbitron', monospace;
+            font-weight: 700;
+        }
+        
+        /* Navigation Header */
+        nav {
+            border-bottom: 1px solid var(--border);
+            background: rgba(26, 26, 58, 0.5);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .max-w-7xl {
+            max-width: 80rem;
+        }
+        
+        .mx-auto {
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .px-4 {
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+        
+        .sm\:px-6 {
+            padding-left: 1.5rem;
+            padding-right: 1.5rem;
+        }
+        
+        .lg\:px-8 {
+            padding-left: 2rem;
+            padding-right: 2rem;
+        }
+        
+        .flex {
+            display: flex;
+        }
+        
+        .items-center {
+            align-items: center;
+        }
+        
+        .justify-between {
+            justify-content: space-between;
+        }
+        
+        .h-16 {
+            height: 4rem;
+        }
+        
+        .space-x-4 > * + * {
+            margin-left: 1rem;
+        }
+        
+        .text-2xl {
+            font-size: 1.5rem;
+        }
+        
+        .text-xl {
+            font-size: 1.25rem;
+        }
+        
+        .font-bold {
+            font-weight: bold;
+        }
+        
+        /* Buttons */
+        .text-button {
+            background: none;
+            border: none;
+            color: var(--primary);
+            cursor: pointer;
+            transition: color 0.2s;
+            font-size: 1rem;
+        }
+        
+        .text-button:hover {
+            color: rgba(0, 255, 255, 0.8);
+        }
+        
+        .border-button {
+            background: none;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+        
+        .border-button:hover {
+            background: var(--primary);
+            color: var(--primary-foreground);
+        }
+        
+        /* Hero Section */
+        .relative {
+            position: relative;
+        }
+        
+        .overflow-hidden {
+            overflow: hidden;
+        }
+        
+        .py-24 {
+            padding-top: 6rem;
+            padding-bottom: 6rem;
+        }
+        
+        .text-center {
+            text-align: center;
+        }
+        
+        .text-6xl {
+            font-size: 3.75rem;
+        }
+        
+        .md\:text-8xl {
+            font-size: 6rem;
+        }
+        
+        .font-black {
+            font-weight: 900;
+        }
+        
+        .mb-6 {
+            margin-bottom: 1.5rem;
+        }
+        
+        .mb-8 {
+            margin-bottom: 2rem;
+        }
+        
+        .mb-16 {
+            margin-bottom: 4rem;
+        }
+        
+        .mt-16 {
+            margin-top: 4rem;
+        }
+        
+        .max-w-3xl {
+            max-width: 48rem;
+        }
+        
+        /* Gradient Text */
+        .glow-effect {
+            text-shadow: 0 0 20px currentColor;
+        }
+        
+        .bg-gradient-to-r {
+            background-image: linear-gradient(to right, var(--primary), var(--blue-400));
+        }
+        
+        .bg-clip-text {
+            -webkit-background-clip: text;
+            background-clip: text;
+        }
+        
+        .text-transparent {
+            color: transparent;
+        }
+        
+        /* Hero Buttons */
+        .flex-col {
+            flex-direction: column;
+        }
+        
+        .sm\:flex-row {
+            flex-direction: row;
+        }
+        
+        .gap-4 {
+            gap: 1rem;
+        }
+        
+        .quest-complete-btn {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--blue-400) 100%);
+            border: none;
+            color: var(--primary-foreground);
+            padding: 1rem 2rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.125rem;
+            display: inline-flex;
+            align-items: center;
+            text-decoration: none;
+        }
+        
+        .quest-complete-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 255, 255, 0.3);
+        }
+        
+        .hero-border-button {
+            background: none;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            padding: 1rem 2rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.125rem;
+            display: inline-flex;
+            align-items: center;
+            text-decoration: none;
+        }
+        
+        .hero-border-button:hover {
+            background: var(--primary);
+            color: var(--primary-foreground);
+            transform: translateY(-2px);
+        }
+        
+        /* Feature Cards */
+        .grid {
+            display: grid;
+        }
+        
+        .md\:grid-cols-3 {
+            grid-template-columns: repeat(3, 1fr);
+        }
+        
+        .gap-8 {
+            gap: 2rem;
+        }
+        
+        .stat-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 1rem;
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 255, 255, 0.2);
+            border-color: var(--primary);
+        }
+        
+        .p-6 {
+            padding: 1.5rem;
+        }
+        
+        .text-3xl {
+            font-size: 1.875rem;
+        }
+        
+        /* Icons */
+        .inline {
+            display: inline;
+        }
+        
+        .w-5 {
+            width: 1.25rem;
+        }
+        
+        .h-5 {
+            height: 1.25rem;
+        }
+        
+        .mr-2 {
+            margin-right: 0.5rem;
+        }
+        
+        .mx-auto {
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .text-6xl {
+                font-size: 2.5rem;
+            }
+            
+            .md\:text-8xl {
+                font-size: 3rem;
+            }
+            
+            .md\:grid-cols-3 {
+                grid-template-columns: 1fr;
+            }
+            
+            .flex-col.sm\:flex-row {
+                flex-direction: column;
+            }
+            
+            .py-24 {
+                padding-top: 8rem;
+                padding-bottom: 4rem;
+            }
+        }
+        
+        /* Animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .floating {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        /* Background Effects */
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .particle {
+            position: absolute;
+            background: var(--primary);
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        /* Clinex Branding */
+        .clinex-glow {
+            text-shadow: 0 0 10px var(--primary), 0 0 20px var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Header -->
+    <nav>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center space-x-4">
+                    <div class="icon-crown text-primary text-2xl">⚡</div>
+                    <h1 class="text-xl font-bold font-orbitron clinex-glow">CLINEX LEVELING</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="/login">
+                        <button class="text-button">System Login</button>
+                    </a>
+                    <a href="/signup">
+                        <button class="border-button">Join Clinex</button>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="relative overflow-hidden">
+        <!-- Animated Background Particles -->
+        <div class="particles" id="particles"></div>
+        
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+            <div class="text-center">
+                <h1 class="text-6xl md:text-8xl font-black mb-6 glow-effect font-orbitron floating">
+                    <span class="bg-gradient-to-r from-primary to-blue-400 bg-clip-text text-transparent">
+                        LEVEL UP
+                    </span>
+                </h1>
+                <p class="text-xl md:text-2xl text-muted-foreground mb-8 max-w-3xl mx-auto">
+                    Transform your daily tasks into epic quests with Clinex Leveling. Track your progress, complete missions, and become the most productive version of yourself.
+                </p>
+                
+                <div class="flex flex-col sm:flex-row gap-4 justify-center mb-16">
+                    <a href="/login" class="quest-complete-btn">
+                        <span class="icon-crown mr-2">⚡</span>
+                        Access System
+                    </a>
+                    <a href="/signup" class="hero-border-button">
+                        <span class="icon-target mr-2">🎯</span>
+                        Start Leveling
+                    </a>
+                </div>
+
+                <!-- Feature Cards -->
+                <div class="grid md:grid-cols-3 gap-8 mt-16">
+                    <div class="stat-card p-6 rounded-xl">
+                        <div class="icon-target text-primary text-3xl mb-4 mx-auto">🎯</div>
+                        <h3 class="text-xl font-bold mb-2 font-orbitron">Daily Missions</h3>
+                        <p class="text-muted-foreground">Complete daily challenges and build consistent progress.</p>
+                    </div>
+                    <div class="stat-card p-6 rounded-xl">
+                        <div class="icon-trending text-primary text-3xl mb-4 mx-auto">📈</div>
+                        <h3 class="text-xl font-bold mb-2 font-orbitron">Progress Tracking</h3>
+                        <p class="text-muted-foreground">Monitor your growth and achievements in real-time.</p>
+                    </div>
+                    <div class="stat-card p-6 rounded-xl">
+                        <div class="icon-trophy text-primary text-3xl mb-4 mx-auto">🏆</div>
+                        <h3 class="text-xl font-bold mb-2 font-orbitron">Achievement System</h3>
+                        <p class="text-muted-foreground">Unlock rewards and level up your productivity skills.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Create animated background particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 30;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                // Random properties
+                const size = Math.random() * 4 + 1;
+                const posX = Math.random() * 100;
+                const posY = Math.random() * 100;
+                const delay = Math.random() * 5;
+                const duration = Math.random() * 3 + 3;
+                
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.left = `${posX}%`;
+                particle.style.top = `${posY}%`;
+                particle.style.animationDelay = `${delay}s`;
+                particle.style.animationDuration = `${duration}s`;
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        // Add scroll effect to navbar
+        window.addEventListener('scroll', function() {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 50) {
+                nav.style.background = 'rgba(10, 10, 42, 0.95)';
+            } else {
+                nav.style.background = 'rgba(26, 26, 58, 0.5)';
+            }
+        });
+        
+        // Add hover effects to feature cards
+        document.addEventListener('DOMContentLoaded', function() {
+            createParticles();
+            
+            const featureCards = document.querySelectorAll('.stat-card');
+            featureCards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-5px)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+        });
+        
+        // Typewriter effect for hero text
+        const heroText = "LEVEL UP";
+        const heroElement = document.querySelector('.bg-gradient-to-r');
+        let charIndex = 0;
+        
+        function typeWriter() {
+            if (charIndex < heroText.length) {
+                heroElement.textContent += heroText.charAt(charIndex);
+                charIndex++;
+                setTimeout(typeWriter, 100);
+            }
+        }
+        
+        // Start typewriter effect after page load
+        window.addEventListener('load', function() {
+            heroElement.textContent = '';
+            setTimeout(typeWriter, 1000);
+        });
+    </script>
+</body>
+</html>
